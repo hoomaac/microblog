@@ -15,8 +15,8 @@ class User(UserMixin, Model):
     joined_at = DateTimeField(datetime.datetime.now)
     is_admin = False
 
-    class meta:
-        database = Database
+    class Meta:
+        database = DATABASE
         order_by = ('-joined_at',)
 
     @classmethod
