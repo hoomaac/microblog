@@ -1,0 +1,20 @@
+
+
+<form method="post" action="">
+
+    {{form.hidden_tag()}}
+
+    {% for field in form %}
+
+        <div>
+            {% if field.errors%}
+                {% for error in field.errors%}
+                    <div>{{error}}</div>
+                {% endfor %}
+            {% endif %}
+
+            {{field(placeholder=field.label.text}}
+        </div>
+
+        {% endfor %}
+</form>
