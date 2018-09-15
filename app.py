@@ -91,7 +91,7 @@ def logout():
     logout_user()
     flash("You've just logout", "success")
     return redirect(url_for('index'))
-
+    
 
 
 

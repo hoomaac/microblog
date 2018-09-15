@@ -1,13 +1,19 @@
+{% extends "layout.html" %}
+
 
 {% macro render_field(field) %}
-    <div>
-        {% if field.errors%}
-            {% for error in field.errors%}
-                <div>{{error}}</div>
-            {% endfor %}
-        {% endif %}
+    <div class="input-group-prepend">
+        <div class="input-group-text">
 
-        {{field(placeholder=field.label.text)}}
+            {% if field.errors%}
+                {% for error in field.errors%}
+                    <div>{{error}}</div>
+                {% endfor %}
+            {% endif %}
+
+
+            {{field(placeholder=field.label.text)}}
+        </div>
     </div>
 
 {% endmacro %}
