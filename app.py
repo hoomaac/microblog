@@ -1,4 +1,5 @@
 from flask import Flask, g
+from flask_login import LoginManager
 
 import models
 
@@ -8,6 +9,20 @@ HOST = '0.0.0.0'
 
 
 app = Flask(__name__)
+
+app.secret_key = '3D713690FB9BF9175F2902300AA99D693910597C'
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(userid):
+    try:
+        return models.User.get(models.User.id == userid)
+    except models.DoesNotExist:
+        return None
+
 
 
 
@@ -29,5 +44,7 @@ def after_request(response):
 
 
 if __name__ == '__main__':
+    models.initialise()
+
     app.run(debug=True, host=HOST, port=PORT)
 
