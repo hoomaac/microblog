@@ -41,13 +41,24 @@
                         Followings
                     </h5>
 
-                    <p>0</p>
+                    <p>{{user.following().count() }}</p>
 
                 </div>
 
 
                 <div class="col-3">
+                    {% if current_user.is_authenticated %}
+                        {% if user != current_user %}
+                            {% if not user in current_user.following() %}
+                                <a href="{{ url_for('follow', username=user.username) }}">follow</a>
+                            {% else %}
+                                <a href="{{ url_for('unfollow', username=user.username) }}">unfollow</a>
+                            {% endif %}
 
+
+                        {% endif %}
+
+                    {% endif %}
 
 
                 </div>

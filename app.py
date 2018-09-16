@@ -28,7 +28,6 @@ def load_user(userid):
         return None
 
 
-
 @app.before_request
 def before_request():
     """ Connect to Database before each request"""
@@ -41,6 +40,7 @@ def before_request():
 def after_request(response):
     """close Database connection after each request"""
     g.db.close()
+    g.user = current_user
     return response
 
 
