@@ -26,8 +26,26 @@ class User(UserMixin, Model):
 
     def get_stream(self):
         return Post.select().where(
+            (Post.user << self.following()) |
             (Post.user == self)
         )
+
+
+    def following(self):
+        """ The users that we follow them """
+
+        return (
+            User.select().join(RelationShip, on=RelationShip.to_user).where(RelationShip.from_user == self)
+        )
+
+
+    def follower(self):
+        """ The people that follow the user """
+
+        return(
+            User.select().join(RelationShip, on=RelationShip.from_user).where(RelationShip.to_user == self)
+        )
+
 
     
     @classmethod
@@ -43,6 +61,18 @@ class User(UserMixin, Model):
         except IntegrityError:
             raise ValueError("User exists already")
 
+
+
+class RelationShip(Model):
+    from_user = ForeignKeyField(User, related_name='relationships')
+    to_user = ForeignKeyField(User, related_name='related_to')
+
+
+    class Meta:
+        database = DATABASE
+        indexes = (
+            ('from_user', 'to_user', True)
+        )
 
 
 class Post(Model):
@@ -61,6 +91,6 @@ class Post(Model):
 
 def initialise():
     DATABASE.connect()
-    DATABASE.create_tables([User, Post], safe=True)
+    DATABASE.create_tables([User, Post, RelationShip], safe=True)
     DATABASE.close()
 

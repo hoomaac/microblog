@@ -82,6 +82,7 @@ def stream(username=None):
     else:
         stream = current_user.get_stream().limit(100)
         user = current_user
+
     if username:
         template = 'user_stream.html'
 
@@ -89,9 +90,12 @@ def stream(username=None):
 
 
 
+
+
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     form = forms.LoginForm()
+
     if form.validate_on_submit():
         try:
             user = models.User.get(models.User.email == form.email.data)
@@ -128,6 +132,63 @@ def post():
 
 
     return render_template('post.html', form=form)
+
+
+@app.route('/follow/<username>')
+@login_required
+def follow(username):
+
+    try:
+        to_user = models.User.get(models.User.username**username)
+
+    except models.DoesNotExist:
+        pass
+
+    else:
+        try:
+            models.RelationShip.create(
+                from_user=g.user._get_current_object(),
+                to_user=to_user
+            )
+
+        except models.IntegrityError:
+            pass
+
+        else:
+            flash("You're now following {}".format(to_user.username), "success")
+
+
+    return redirect(url_for('stream', username=to_user.username))
+
+
+@app.route('/unfollow/<username>')
+@login_required
+def unfollow(username):
+
+    try:
+        to_user = models.User.get(models.User.username**username)
+
+    except models.DoesNotExist:
+        pass
+
+    else:
+        try:
+            models.RelationShip.get(
+                from_user=g.user._get_current_object(),
+                to_user=to_user
+            ).delete_instance()
+
+        except models.IntegrityError:
+            pass
+
+        else:
+            flash("You've unfollowed {}".format(to_user.username), "success")
+
+
+    return redirect(url_for('stream', username=to_user.username))
+
+
+
 
 
 

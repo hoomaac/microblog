@@ -15,7 +15,7 @@
         <div class="col-4">
 
             <div class="row">
-                <div class="col-4">
+                <div class="col-3">
                     <h5>
                         Posts
                     </h5>
@@ -24,18 +24,18 @@
 
                 </div>
 
-                <div class="col-4">
+                <div class="col-3">
 
                     <h5>
                         Followers
                     </h5>
 
-                    <p>0</p>
+                    <p>{{ user.follower().count() }}</p>
 
 
                 </div>
 
-                <div class="col-4">
+                <div class="col-3">
 
                     <h5>
                         Followings
@@ -44,6 +44,16 @@
                     <p>0</p>
 
                 </div>
+
+
+                <div class="col-3">
+
+
+
+                </div>
+
+
+
             </div>
 
         </div>
