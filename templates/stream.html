@@ -8,20 +8,20 @@
         <div class="card">
           <div class="card-header">
                 <h2>
-                    <a href="{{ url_for('stream') username = post.user.username}}">
-                        post.user.username
+                    <a href="{{ url_for('stream', username = post.user.username)}}">
+                        {{post.user.username}}
                     </a>
                 </h2>
           </div>
           <div class="card-body">
 
-            <p class="card-text"><small class="text-muted">
-                <time datetime="{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S )}}">
-                    post.timestamp.strftime('%Y-%m-%d %H:%M:%S )
+            {{post.content}}
+
+              <p class="card-text"><small class="text-muted">
+                <time datetime="{{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S' )}}">
+                   {{ post.timestamp.strftime('%Y-%m-%d %H:%M:%S' )}}
                 </time>
             </small></p>
-
-            {{post.content}}
 
           </div>
         </div>

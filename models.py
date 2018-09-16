@@ -1,18 +1,19 @@
 import datetime
 
 from peewee import *
+import flask_mysqldb
 from flask_login import UserMixin
 from flask_bcrypt import generate_password_hash
 
 
-DATABASE = SqliteDatabase('microblog.db')
+DATABASE = MySQLDatabase('micro', user='root', password='13571113', host='localhost', port=3306)
 
 
 class User(UserMixin, Model):
     username = CharField(unique=True)
     email = CharField(unique=True)
     password = CharField(max_length=100)
-    joined_at = DateTimeField(datetime.datetime.now)
+    joined_at = DateTimeField(default=datetime.datetime.now)
     is_admin = False
 
     class Meta:

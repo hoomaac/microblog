@@ -1,0 +1,56 @@
+{% extends "stream.html" %}
+
+
+
+{% block content %}
+
+      <div class="row">
+        <div class="col-4">
+            <h1>
+              {{ user.username }}
+          </h1>
+        </div>
+
+
+        <div class="col-4">
+
+            <div class="row">
+                <div class="col-4">
+                    <h5>
+                        Posts
+                    </h5>
+
+                    <p>{{ user.posts.count()}}</p>
+
+                </div>
+
+                <div class="col-4">
+
+                    <h5>
+                        Followers
+                    </h5>
+
+                    <p>0</p>
+
+
+                </div>
+
+                <div class="col-4">
+
+                    <h5>
+                        Followings
+                    </h5>
+
+                    <p>0</p>
+
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-4"></div>
+      </div>
+
+{{ super() }}
+
+{% endblock %}

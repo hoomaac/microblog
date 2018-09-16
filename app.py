@@ -29,7 +29,6 @@ def load_user(userid):
 
 
 
-
 @app.before_request
 def before_request():
     """ Connect to Database before each request"""
@@ -56,7 +55,6 @@ def register():
                 password=form.password.data
             )
             flash("You registered successfully", "success")
-
 
         except ValueError:
             flash("User already exists", "danger")
@@ -123,7 +121,7 @@ def logout():
 def post():
     form = forms.PostForm()
     if form.validate_on_submit():
-        models.Post.create(user=g.user_get_current_object(),
+        models.Post.create(user=g.user._get_current_object(),
                            content=form.content.data.strip())
         flash("Message posted", "success")
         return redirect(url_for('index'))
@@ -136,6 +134,17 @@ def post():
 if __name__ == '__main__':
 
     models.initialise()
+
+    try:
+        models.User.create_user(
+            username='humac',
+            email='hoomaac@gmail.com',
+            password='123',
+            admin=True
+        )
+
+    except ValueError:
+        pass
 
 
     app.run(debug=True, host=HOST, port=PORT)
