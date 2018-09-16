@@ -2,8 +2,8 @@
 
 
 {% macro render_field(field) %}
-    <div class="input-group-prepend">
-        <div class="input-group-text">
+    <div class="input-group mb-3">
+        <div class="input-group-prepend">
 
             {% if field.errors%}
                 {% for error in field.errors%}
@@ -11,9 +11,10 @@
                 {% endfor %}
             {% endif %}
 
+            <!--<span class="input-group-text " id="basic-addon1">{{ field.label.text }}</span>-->
 
-            {{field(placeholder=field.label.text)}}
         </div>
+        {{ field(class_='form-control', placeholder=field.label.text) }}
     </div>
 
 {% endmacro %}

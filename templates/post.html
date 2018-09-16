@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+
+{% block content %}
+
+<div class="row justify-content-md-center align-items-center">
+    <div class="col col-lg-2"></div>
+
+    <div class="col-md-auto">
+
+        <form method="POST" action="">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    {{form.hidden_tag()}}
+
+                    {% for field in form if field.widget.input_type != 'hidden' %}
+                    {% if field.errors%}
+                    {% for error in field.errors%}
+                    <div>{{error}}</div>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% endfor %}
+
+                </div>
+
+                {{ form.content(class_='form-control', rows='3', cols='50', placeholder=form.content.label.text)}}
+            </div>
+
+        </form>
+
+
+    </div>
+
+    <div class="col col-lg-2"></div>
+
+</div>
+
+
+{% endblock %}

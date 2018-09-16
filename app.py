@@ -1,6 +1,6 @@
 from flask import (Flask, g, render_template, flash, redirect, url_for)
 from flask_login import (LoginManager, login_user, logout_user,
-                         login_required)
+                         login_required, current_user)
 
 from flask_bcrypt import check_password_hash
 
@@ -35,7 +35,7 @@ def before_request():
     """ Connect to Database before each request"""
     g.db = models.DATABASE
     g.db.connect()
-
+    g.user = current_user
 
 @app.after_request
 
@@ -49,14 +49,20 @@ def after_request(response):
 def register():
     form = forms.RegisterForm()
     if form.validate_on_submit():
-        flash("You registered successfully", "success")
-        models.User.create_user(
-            username=form.username.data,
-            email=form.email.data,
-            password=form.password.data
-        )
+        try:
+            models.User.create_user(
+                username=form.username.data,
+                email=form.email.data,
+                password=form.password.data
+            )
+            flash("You registered successfully", "success")
 
-        return redirect(url_for('index'))
+
+        except ValueError:
+            flash("User already exists", "danger")
+
+        else:
+            return redirect(url_for('index'))
 
     return render_template('register.html', form=form)
 
@@ -93,9 +99,22 @@ def logout():
     return redirect(url_for('index'))
     
 
+@app.route('/new_post', methods=['GET', 'POST'])
+def post():
+    form = forms.PostForm()
+    if form.validate_on_submit():
+        models.Post.create(user=g.user_get_current_object(),
+                           content=form.content.data.strip())
+        flash("Message posted", "success")
+        return redirect(url_for('index'))
+
+
+    return render_template('post.html', form=form)
+
 
 
 if __name__ == '__main__':
+
     models.initialise()
 
 
