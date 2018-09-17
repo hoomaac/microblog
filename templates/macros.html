@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+<!--{% extends "layout.html" %}-->
 
 
 {% macro render_field(field) %}
@@ -13,8 +13,6 @@
 <div class="input-group mb-3">
     <div class="input-group-prepend">
 
-
-        <!--<span class="input-group-text " id="basic-addon1">{{ field.label.text }}</span>-->
 
     </div>
     {{ field(class_='form-control', placeholder=field.label.text) }}

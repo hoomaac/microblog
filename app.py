@@ -1,4 +1,4 @@
-from flask import (Flask, g, render_template, flash, redirect, url_for)
+from flask import (Flask, g, render_template, flash, redirect, url_for, abort, session)
 from flask_login import (LoginManager, login_user, logout_user,
                          login_required, current_user)
 
@@ -19,13 +19,18 @@ app.secret_key = '3D713690FB9BF9175F2902300AA99D693910597C'
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+login_manager.anonymous_user = models.Anonymous
+
+
 
 @login_manager.user_loader
-def load_user(userid):
+def load_user(user_id):
     try:
-        return models.User.get(models.User.id == userid)
+        return models.User.get(models.User.id == user_id)
     except models.DoesNotExist:
         return None
+
+
 
 
 @app.before_request
@@ -36,11 +41,9 @@ def before_request():
     g.user = current_user
 
 @app.after_request
-
 def after_request(response):
     """close Database connection after each request"""
     g.db.close()
-    g.user = current_user
     return response
 
 
@@ -75,10 +78,16 @@ def index():
 @app.route('/stream/<username>')
 def stream(username=None):
     template = 'stream.html'
+    # if current_user.is_authenticated:
+    #     curr_user_name = current_user.username
+    # else:
+    #     curr_user_name = 'Guest'
+
     if username and username != current_user.username:
         user = models.User.select().where(models.User.username**username).get()
 
         stream = user.posts.limit(100)
+
     else:
         stream = current_user.get_stream().limit(100)
         user = current_user
@@ -100,7 +109,7 @@ def login():
         try:
             user = models.User.get(models.User.email == form.email.data)
         except models.DoesNotExist:
-            flash("Your email or password doesn't match", "error")
+            flash("Your email or password doesn't match", "danger")
 
         else:
             if check_password_hash(user.password, form.password.data):
@@ -108,7 +117,7 @@ def login():
                 flash("You've logged in", "success")
                 return redirect(url_for('index'))
             else:
-                flash("Your email or password doesn't match", "error")
+                flash("Your email or password doesn't match", "danger")
 
     return render_template('login.html', form=form)
 
@@ -122,6 +131,7 @@ def logout():
     
 
 @app.route('/new_post', methods=['GET', 'POST'])
+@login_required
 def post():
     form = forms.PostForm()
     if form.validate_on_submit():

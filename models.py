@@ -2,7 +2,7 @@ import datetime
 
 from peewee import *
 import flask_mysqldb
-from flask_login import UserMixin
+from flask_login import UserMixin, AnonymousUserMixin
 from flask_bcrypt import generate_password_hash
 
 
@@ -30,6 +30,8 @@ class User(UserMixin, Model):
             (Post.user == self)
         )
 
+    def is_authenticated(self):
+        return True
 
     def following(self):
         """ The users that we follow them """
@@ -73,6 +75,12 @@ class RelationShip(Model):
         indexes = (
             ('from_user', 'to_user', True)
         )
+
+
+class Anonymous(AnonymousUserMixin):
+    def __init__(self):
+        self.username = 'Guest'
+
 
 
 class Post(Model):
