@@ -84,9 +84,13 @@ def stream(username=None):
     #     curr_user_name = 'Guest'
 
     if username and username != current_user.username:
-        user = models.User.select().where(models.User.username**username).get()
+        try:
+            user = models.User.select().where(models.User.username**username).get()
 
-        stream = user.posts.limit(100)
+        except models.DoesNotExist:
+            abort(404)
+        else:
+            stream = user.posts.limit(100)
 
     else:
         stream = current_user.get_stream().limit(100)
@@ -152,7 +156,7 @@ def follow(username):
         to_user = models.User.get(models.User.username**username)
 
     except models.DoesNotExist:
-        pass
+        abort(404)
 
     else:
         try:
@@ -179,7 +183,7 @@ def unfollow(username):
         to_user = models.User.get(models.User.username**username)
 
     except models.DoesNotExist:
-        pass
+        abort(404)
 
     else:
         try:
@@ -198,7 +202,12 @@ def unfollow(username):
     return redirect(url_for('stream', username=to_user.username))
 
 
+@app.route('/delete_post/<post_id>')
+@login_required
+def delete_post(post_id):
 
+    models.Post.get(models.Post.id == post_id).delete_instance()
+    return redirect(url_for('stream', username=current_user.username))
 
 
 
